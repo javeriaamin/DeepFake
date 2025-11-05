@@ -1,0 +1,17 @@
+x = swin.output
+x = BatchNormalization()(x)
+x = Dense(32, activation='relu')(x)
+x = Dense(256, activation='relu')(x)
+x_swin = Dense(128, activation='relu')(x)
+
+def get_model(base_model):
+    x = GlobalAveragePooling2D()(se_block(base_model.output))
+    x = BatchNormalization()(x)
+    x = Dense(512, activation='relu')(x)
+    x = Dense(256, activation='relu')(x)
+    return Dense(128, activation='relu')(x)
+
+x_encoder = get_model(encoder)
+concatenated = concatenate([x_encoder, x_swin])
+output = Dense(len(train_images.class_indices), activation='softmax')(concatenated)
+model = Model([encoder.input, swin.input], output)

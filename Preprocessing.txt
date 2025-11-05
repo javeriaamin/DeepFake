@@ -1,0 +1,24 @@
+
+batch_size = 16
+size = 224
+epoch = 50
+
+train_datagen = ImageDataGenerator(rescale=1./255)
+train_generator = train_datagen.flow_from_dataframe(
+    dataframe=train,
+    x_col='path',
+    y_col='class_',
+    target_size=(size, size),
+    batch_size=batch_size,
+    class_mode="input"
+)
+
+valid_datagen = ImageDataGenerator(rescale=1./255)
+valid_generator = valid_datagen.flow_from_dataframe(
+    dataframe=valid,
+    x_col='path',
+    y_col='class_',
+    target_size=(size, size),
+    batch_size=batch_size,
+    class_mode="input"
+)

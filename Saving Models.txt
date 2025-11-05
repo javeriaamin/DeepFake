@@ -1,0 +1,3 @@
+autoencoder.save("auto_encoder.h5")
+encoder.save('encoder.h5')
+decoder.save('decoder.h5')

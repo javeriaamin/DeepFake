@@ -1,0 +1,14 @@
+import matplotlib.pyplot as plt
+
+epochs = list(range(len(history.history['loss'])))
+train_loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+fig, ax = plt.subplots(1, 2)
+fig.set_size_inches(20, 10)
+ax[1].plot(epochs, train_loss, 'r-o', linewidth=8, label='Training Loss')
+ax[1].plot(epochs, val_loss, 'g-o', linewidth=8, label='Validation Loss')
+ax[1].legend(fontsize=22)
+ax[1].set_xlabel("Epochs", fontsize=22)
+ax[1].set_ylabel("Training Loss", fontsize=22)
+plt.savefig('/kaggle/working/training_loss_plot.png')

@@ -1,0 +1,18 @@
+def generator_two_img(gen):
+    while True:
+        X1i = gen.next()
+        yield [X1i[0], X1i[0]], X1i[1]
+
+model.compile(
+    loss="categorical_crossentropy",
+    optimizer=tf.keras.optimizers.experimental.Adamax(),
+    metrics=['accuracy']
+)
+
+history = model.fit(
+    generator_two_img(train_images),
+    validation_data=generator_two_img(valid_images),
+    validation_steps=valid_images.n // batch_size,
+    steps_per_epoch=train_images.n // batch_size,
+    epochs=15
+)

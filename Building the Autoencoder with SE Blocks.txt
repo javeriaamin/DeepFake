@@ -1,0 +1,40 @@
+def se_block_enc(inputs, alpha):
+    input_channels = inputs.shape[-1]
+    x = tf.keras.layers.GlobalAveragePooling2D()(inputs)
+    x = tf.keras.layers.Dense(units=alpha, activation="relu")(x)
+    x = tf.keras.layers.Dense(units=input_channels, activation="sigmoid")(x)
+    x = tf.reshape(x, [-1, 1, 1, input_channels])
+    return inputs * x
+
+# ENCODER
+input_img = Input(shape=(size, size, 3))
+x = Conv2D(48, (3, 3), activation='relu', padding='same')(input_img)
+x = se_block_enc(x, 20)
+x = MaxPooling2D((2, 2), padding='same')(x)
+x = Conv2D(96, (3, 3), activation='relu', padding='same')(x)
+x = se_block_enc(x, 30)
+x = MaxPooling2D((2, 2), padding='same')(x)
+x = Conv2D(192, (3, 3), activation='relu', padding='same')(x)
+x = se_block_enc(x, 50)
+x = MaxPooling2D((2, 2), padding='same')(x)
+encoded = Conv2D(32, (1, 1), activation='relu', padding='same')(x)
+
+# Bottleneck
+latentSize = (28, 28, 32)
+
+# DECODER
+direct_input = Input(shape=latentSize)
+x = Conv2D(192, (1, 1), activation='relu', padding='same')(direct_input)
+x = UpSampling2D((2, 2))(x)
+x = Conv2D(192, (3, 3), activation='relu', padding='same')(x)
+x = UpSampling2D((2, 2))(x)
+x = Conv2D(96, (3, 3), activation='relu', padding='same')(x)
+x = UpSampling2D((2, 2))(x)
+x = Conv2D(48, (3, 3), activation='relu', padding='same')(x)
+x = Conv2D(192, (3, 3), activation='relu', padding='same')(x)
+decoded = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
+
+# MODELS
+encoder = Model(input_img, encoded)
+decoder = Model(direct_input, decoded)
+autoencoder = Model(input_img, decoder(encoded))

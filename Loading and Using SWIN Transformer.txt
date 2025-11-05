@@ -1,0 +1,9 @@
+import tensorflow_hub as hub
+
+def get_from_hub(model_url):
+    inputs = tf.keras.Input((224, 224, 3))
+    hub_module = hub.KerasLayer(model_url, trainable=False)
+    outputs = hub_module(inputs)
+    return tf.keras.Model(inputs, outputs)
+
+swin = get_from_hub("https://tfhub.dev/sayakpaul/swin_large_patch4_window7_224_in22k_fe/1")

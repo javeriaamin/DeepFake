@@ -1,0 +1,28 @@
+train_datagen = ImageDataGenerator(
+    rescale=1.0 / 255,
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode="nearest",
+)
+
+train_images = train_datagen.flow_from_dataframe(
+    dataframe=train,
+    x_col='path',
+    y_col='class_',
+    batch_size=batch_size,
+    target_size=(size, size),
+    class_mode='categorical'
+)
+
+valid_images = valid_datagen.flow_from_dataframe(
+    dataframe=valid,
+    x_col='path',
+    y_col='class_',
+    batch_size=batch_size,
+    target_size=(size, size),
+    class_mode='categorical'
+)
